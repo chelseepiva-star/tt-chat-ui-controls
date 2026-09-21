@@ -1,0 +1,49 @@
+/*
+ * 聊天显示控制 v1.2
+ * 1) 聊天正文颜色与全局“主要文本”分离。
+ * 2) 最底层背景图片模糊与聊天正文卡片 / UI 毛玻璃彻底分离。
+ */
+
+:root {
+    --ChatTextColor: var(--SmartThemeBodyColor);
+    --BackgroundImageBlurPx: 0px;
+    --BackgroundImageScale: 1;
+}
+
+/* 只覆盖聊天消息正文普通文字。 */
+#chat .mes .mes_text {
+    color: var(--ChatTextColor, var(--SmartThemeBodyColor)) !important;
+}
+
+/*
+ * 背景图本体：SillyTavern / TauriTavern 当前主背景层为 #bg1。
+ * 模糊直接作用于图片层，不再靠 #chat / .mes 的 backdrop-filter 去糊后面的背景。
+ */
+#bg1 {
+    filter: blur(var(--BackgroundImageBlurPx, 0px)) !important;
+    transform: scale(var(--BackgroundImageScale, 1)) !important;
+    transform-origin: center center !important;
+    will-change: filter, transform;
+}
+
+/*
+ * 聊天阅读区保持为前景层：
+ * - #chat 不再额外把整张背景图做毛玻璃。
+ * - .mes（包括“拾光”主题的白色正文卡片）不再拿全局 UI 模糊值去糊背景。
+ * 这样“背景图片模糊强度”只影响 #bg1，本身不会把正文/白色卡片弄糊。
+ */
+#chat,
+#chat .mes {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+/* 新增颜色项沿用 SillyTavern 原生 color-picker-block 布局。 */
+#chat-text-color-row {
+    align-items: center;
+}
+
+#chat-text-color-row > span,
+#background-image-blur-control small > span {
+    user-select: none;
+}
